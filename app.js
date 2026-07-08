@@ -25,18 +25,21 @@ const PRODUCTS = {
     { name: "Samolepky Charis", price: 20 },
     { name: "Oplatky", price: 90 },
     { name: "Prapor VELKÝ", price: 430 },
-    { name: "Prapor MALÝ", price: 300 },
-    { name: "Prapor RATOLEST", price: 350 },
+    { name: "Prapor DĚTSKÝ", price: 270 },
+    { name: "Prapor RATOLEST", price: 330 },
     { name: "Poštovní služba", price: 40 },
     { name: "Gumička 1ks", price: 80 },
-    { name: "Gumičky 2ks", price: 150 }
+    { name: "Gumičky 2ks", price: 150 },
+    { name: "Plátěnka", price: 120 }
   ],
-  "Godzone": [
+  "Godzone kids": [
     { name: "detská mikina SOM ORIGINÁL", price: 485 },
     { name: "detská mikina OVOCIE DUCHA zelená", price: 485 },
     { name: "detská mikina OVOCIE DUCHA růžová", price: 485 },
     { name: "detská šiltovka SOM ORIGINÁL", price: 320 },
     { name: "detské cd ODVÁŽNY PRIATEĽ", price: 250 },
+    ],
+    "Godzone": [
     { name: "3 rôzne odznaky spolu", price: 50 },
     { name: "cd VITAJ V SLOBODE", price: 250 },
     { name: "cd NIE SI NA TO SÁM", price: 250 },
@@ -49,15 +52,13 @@ const PRODUCTS = {
     { name: "Mikina I WILL BLESS", price: 730 },
     { name: "Mikina GRACE HUNTER", price: 970 },
     { name: "Mikina LOST AND FOUND", price: 970 },
-    { name: "Košile GRACE UPON GRACE", price: 1090 },
-    { name: "Košile SALT AND LIGHT", price: 870 },
     { name: "Šaty ŽALM 46 ZELENÉ", price: 725 },
     { name: "Šaty ŽALM 46 MODRÉ", price: 725 },
     { name: "Tričko LOST AND FOUND", price: 485 },
-    { name: "Tričko GRACE HUNTER", price: 560 },
+    { name: "Tričko GRACE HUNTER", price: 555 },
     { name: "Tričko SOFONIÁŠ", price: 580 },
     { name: "Tričko HOPE RUNNER", price: 725 },
-    { name: "Tričko BLOOM", price: 555 },
+    { name: "Tričko BLOOM", price: 560 },
     { name: "Ponožky MODRÉ", price: 190 },
     { name: "Ponožky JESUS", price: 190 },
     { name: "Ponožky ČIERNE", price: 190 },
@@ -79,7 +80,7 @@ const PRODUCTS = {
     { name: "Biblické karty", price: 200 },
     { name: "Duchovní deník pro muže", price: 250 }
   ],
-  "Smrčci": [
+  "Výprodej": [
     { name: "Kapesní kabel nabíjející", price: 200 },
     { name: "Keramický hrnek se dřevem", price: 200 },
     { name: "Příbory", price: 150 },
@@ -88,7 +89,6 @@ const PRODUCTS = {
     { name: "Vějíř CHARIS", price: 80 },
     { name: "Pláštěnka", price: 50 },
     { name: "Trička", price: 80 },
-    { name: "Plátěnka", price: 120 }
   ]
 };
 
