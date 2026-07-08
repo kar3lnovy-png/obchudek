@@ -111,6 +111,16 @@ const cartEmptyEl = document.getElementById("cart-empty");
 const cartTotalEl = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
 
+// =================== HAPTICKÁ ODEZVA ===================
+document.addEventListener('click', (e) => {
+  // Zkontrolujeme, jestli uživatel klikl na nějaký interaktivní prvek
+  const isClickable = e.target.closest('.pin-btn, .supplier-tab, .product-card, button');
+
+  // Pokud ano a zařízení to podporuje (Android), lehce zavrní
+  if (isClickable && navigator.vibrate) {
+    navigator.vibrate(40); 
+  }
+});
 // =================== PIN LOGIN ===================
 document.querySelectorAll(".pin-btn[data-num]").forEach(btn => {
   btn.addEventListener("click", () => {
