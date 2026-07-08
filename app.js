@@ -130,6 +130,13 @@ document.querySelectorAll(".pin-btn[data-num]").forEach(btn => {
     if (enteredPin.length === 4) checkPin();
   });
 });
+function updatePinDots() {
+  pinDots.forEach((dot, i) => {
+    // Přidá třídu "filled" tečkám podle toho, kolik čísel je zadáno
+    dot.classList.toggle("filled", i < enteredPin.length);
+  });
+  pinError.classList.add("hidden");
+}
 
 document.getElementById("pin-back").addEventListener("click", () => {
   enteredPin = enteredPin.slice(0, -1);
