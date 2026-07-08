@@ -87,6 +87,23 @@ button, .product-card, .supplier-tab {
   background: #dbeafe;
 }
 
+/* Základní (prázdný) stav tečky */
+.pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #93c5fd;
+  background: transparent;
+  transition: background 0.15s;
+  display: inline-block;
+}
+
+/* Vyplněný stav tečky (při zadání čísla) */
+.pin-dot.filled {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
 /* Supplier tabs */
 .supplier-tab {
   white-space: nowrap;
