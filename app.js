@@ -99,7 +99,6 @@ let cart = []; // { supplier, name, price, qty }
 let activeSupplier = Object.keys(PRODUCTS)[0];
 
 // =================== DOM ELEMENTY ===================
-const pinDots = document.querySelectorAll(".pin-dot");
 const loginScreen = document.getElementById("login-screen");
 const posScreen = document.getElementById("pos-screen");
 const pinDots = document.querySelectorAll(".pin-dot");
