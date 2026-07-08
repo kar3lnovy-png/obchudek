@@ -1,3 +1,15 @@
+/* Globální vylepšení pro dotykové obrazovky */
+button, 
+.pin-btn, 
+.supplier-tab, 
+.product-card, 
+.qty-btn {
+  /* Zruší 300ms zpoždění při kliknutí na mobilu */
+  touch-action: manipulation;
+  /* Odstraní výchozí šedé probliknutí na telefonech */
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
