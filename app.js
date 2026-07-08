@@ -111,6 +111,9 @@ const cartEmptyEl = document.getElementById("cart-empty");
 const cartTotalEl = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
 
+// Aktivace okamžité odezvy (:active stavu) na mobilech
+document.addEventListener("touchstart", function() {}, { passive: true });
+
 // =================== HAPTICKÁ ODEZVA ===================
 document.addEventListener('click', (e) => {
   // Zkontrolujeme, jestli uživatel klikl na nějaký interaktivní prvek
