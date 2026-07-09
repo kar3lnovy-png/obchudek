@@ -3,10 +3,10 @@ button,
 .pin-btn, 
 .supplier-tab, 
 .product-card, 
-.qty-btn {
-  /* Zruší 300ms zpoždění při kliknutí na mobilu */
+.qty-btn,
+.calc-numpad-btn,
+.quick-amount-btn {
   touch-action: manipulation;
-  /* Odstraní výchozí šedé probliknutí na telefonech */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -14,60 +14,63 @@ body {
   font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* Ukázka pro pin-btn */
-.pin-btn:active {
-  transform: scale(0.95);
-  background: #bfdbfe; /* Tmavší modrá při stisku */
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); /* Vnitřní stín pro pocit zamáčknutí */
-}
-
-// =================== HAPTICKÁ ODEZVA ===================
-document.addEventListener('click', (e) => {
-  // Zkontrolujeme, jestli uživatel klikl na tlačítko, produkt, tab nebo jakýkoliv button
-  const isClickable = e.target.closest('.pin-btn, .supplier-tab, .product-card, button');
-
-  if (isClickable && navigator.vibrate) {
-    // Zavrnění na 40 milisekund (ideální pro pocit jemného "ťuknutí")
-    navigator.vibrate(40);
-  }
-});
-
 /* Vypnutí výchozího šedého probliknutí prohlížeče na mobilech */
 button, .product-card, .supplier-tab {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* --- PIN tlačítka --- */
-.pin-btn:active {
-  transform: scale(0.92); /* Výraznější zmenšení */
-  background: #bfdbfe !important; /* Ztmavnutí pozadí tlačítka */
-  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15); /* Vnitřní stín simuluje zamáčknutí */
+/* --- Tlačítka (PIN a Kalkulačka) --- */
+.pin-btn, .calc-numpad-btn {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 1.5rem; /* Zvětšeno z 1.25 na 1.5 pro pohodlnější trefování na kalkulačce */
+  font-weight: 700;
+  padding: 1.1rem 0; /* Vyšší tlačítka pro dotyk */
+  border-radius: 1rem;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+}
+
+.pin-btn:active, .calc-numpad-btn:active {
+  transform: scale(0.92);
+  background: #bfdbfe !important; 
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15); 
+}
+
+/* Rychlá volba bankovek */
+.quick-amount-btn {
+  transition: transform 0.1s, background-color 0.15s, box-shadow 0.1s;
+}
+.quick-amount-btn:active {
+  transform: scale(0.92);
+  background-color: #6ee7b7; /* Tmavší zelená při stisku */
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
 }
 
 /* --- Karty produktů --- */
 .product-card:active {
   transform: scale(0.95);
-  background-color: #f1f5f9; /* Ztmavnutí pozadí karty */
-  border-color: #94a3b8; /* Zvýraznění okraje */
+  background-color: #f1f5f9; 
+  border-color: #94a3b8; 
 }
 
 /* --- Taby dodavatelů --- */
 .supplier-tab:active {
   transform: scale(0.95);
-  filter: brightness(0.85); /* Univerzální rychlé ztmavení pro taby */
+  filter: brightness(0.85); 
 }
 
 /* --- Tlačítka v košíku (+ a -) --- */
 .qty-btn:active { 
-  background: #93c5fd; /* Tmavší modrá při stisku */
+  background: #93c5fd; 
   transform: scale(0.9);
 }
 
 /* --- Hlavní tlačítko "Zaúčtovat" --- */
-#checkout-btn:active:not(:disabled) {
+#checkout-btn:active:not(:disabled),
+#calc-checkout-btn:active:not(:disabled),
+#calc-confirm-btn:active:not(:disabled) {
   transform: scale(0.97);
-  background-color: #1d4ed8; /* Výraznější tmavě modrá */
-  box-shadow: inset 0 4px 8px rgba(0,0,0,0.25); /* Hluboký stín zamáčknutí */
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.25); 
 }
 
 /* PIN dots */
@@ -82,21 +85,6 @@ button, .product-card, .supplier-tab {
 .pin-dot.filled {
   background: #2563eb;
   border-color: #2563eb;
-}
-
-/* PIN keypad buttons */
-.pin-btn {
-  background: #eff6ff;
-  color: #1e3a8a;
-  font-size: 1.25rem;
-  font-weight: 600;
-  padding: 0.9rem 0;
-  border-radius: 0.75rem;
-  transition: background 0.15s, transform 0.1s;
-}
-.pin-btn:active {
-  transform: scale(0.95);
-  background: #dbeafe;
 }
 
 /* Supplier tabs */
@@ -169,58 +157,29 @@ button, .product-card, .supplier-tab {
 
 /* Spinner */
 .spinner {
-  width: 42px;
-  height: 42px;
-  border: 4px solid #dbeafe;
+  width: 46px;
+  height: 46px;
+  border: 5px solid #dbeafe;
   border-top-color: #2563eb;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* =================== ODEZVA TLAČÍTEK =================== */
-
-/* Záložky dodavatelů */
-.supplier-tab {
-  transition: background 0.15s, transform 0.1s; 
-}
-.supplier-tab:active {
-  transform: scale(0.95);
-}
-
-/* Tlačítka + a - v košíku */
-.qty-btn {
-  transition: background 0.15s, transform 0.1s;
-}
-.qty-btn:active {
-  transform: scale(0.85);
-}
-
 /* Tlačítko odstranit (křížek v košíku) */
 button[data-action="remove"] {
   transition: transform 0.1s, opacity 0.1s;
-  display: inline-block; /* Nutné pro fungování transform na textovém elementu */
+  display: inline-block; 
 }
 button[data-action="remove"]:active {
   transform: scale(0.8);
   opacity: 0.6;
 }
 
-/* Hlavní tlačítko Zaúčtovat */
-#checkout-btn {
-  /* Tailwind třída 'transition' už řeší barvu, přidáme transform pro kliknutí */
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-#checkout-btn:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-/* Tlačítka v hlavičce a modálním okně (Odhlásit, Zavřít) */
-#logout-btn, #overlay-close {
+/* Tlačítka v hlavičkách a modálních oknech */
+#logout-btn, #calc-cancel-btn, #overlay-close {
   transition: transform 0.1s, background-color 0.15s;
 }
-#logout-btn:active, #overlay-close:active {
+#logout-btn:active, #calc-cancel-btn:active, #overlay-close:active {
   transform: scale(0.92);
 }
