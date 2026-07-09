@@ -1,7 +1,6 @@
 // =================== KONFIGURACE ===================
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyB7Uf9V9knZRrB8m4jig1zgCL87y2GxBJa_xX8RMpLvufrWmYb1b49I8duUzErLJ37/exec"; // <-- SEM VLOŽ URL Z APPS SCRIPTU
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyB7Uf9V9knZRrB8m4jig1zgCL87y2GxBJa_xX8RMpLvufrWmYb1b49I8duUzErLJ37/exec";
 
-// Zaměstnanci a jejich PINy
 const EMPLOYEES = {
   "1001": "Centrální tablet",
   "1002": "Filip Dvořáček",
@@ -18,7 +17,6 @@ const EMPLOYEES = {
   "1013": "Jan Pelán"
 };
 
-// Produkty rozdělené podle dodavatelů
 const PRODUCTS = {
   "Charis": [
     { name: "Pohlednice Charis", price: 40 },
@@ -95,7 +93,7 @@ const PRODUCTS = {
 // =================== STAV APLIKACE ===================
 let enteredPin = "";
 let currentEmployee = null;
-let cart = []; // { supplier, name, price, qty }
+let cart = []; 
 let activeSupplier = Object.keys(PRODUCTS)[0];
 
 // =================== DOM ELEMENTY ===================
@@ -110,20 +108,30 @@ const cartItemsEl = document.getElementById("cart-items");
 const cartEmptyEl = document.getElementById("cart-empty");
 const cartTotalEl = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
+const calcCheckoutBtn = document.getElementById("calc-checkout-btn");
 
-// Aktivace okamžité odezvy (:active stavu) na mobilech
+// DOM Elementy Nové Celostránkové Kalkulačky
+const calcScreen = document.getElementById("calc-screen");
+const calcTotalDisplay = document.getElementById("calc-total-display");
+const calcReceivedInput = document.getElementById("calc-received-input");
+const calcResultBox = document.getElementById("calc-result-box");
+const calcResultLabel = document.getElementById("calc-result-label");
+const calcChangeDisplay = document.getElementById("calc-change-display");
+const calcCancelBtn = document.getElementById("calc-cancel-btn");
+const calcConfirmBtn = document.getElementById("calc-confirm-btn");
+const calcQuickAmountsEl = document.getElementById("calc-quick-amounts");
+
+// Zrušení delaye na mobilech
 document.addEventListener("touchstart", function() {}, { passive: true });
 
 // =================== HAPTICKÁ ODEZVA ===================
 document.addEventListener('click', (e) => {
-  // Zkontrolujeme, jestli uživatel klikl na nějaký interaktivní prvek
-  const isClickable = e.target.closest('.pin-btn, .supplier-tab, .product-card, button');
-
-  // Pokud ano a zařízení to podporuje (Android), lehce zavrní
+  const isClickable = e.target.closest('.pin-btn, .supplier-tab, .product-card, button, .calc-numpad-btn, .quick-amount-btn');
   if (isClickable && navigator.vibrate) {
     navigator.vibrate(40); 
   }
 });
+
 // =================== PIN LOGIN ===================
 document.querySelectorAll(".pin-btn[data-num]").forEach(btn => {
   btn.addEventListener("click", () => {
@@ -212,6 +220,10 @@ function renderProducts() {
 }
 
 // =================== KOŠÍK ===================
+function getCartTotal() {
+  return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+}
+
 function addToCart(supplier, product) {
   const existing = cart.find(i => i.supplier === supplier && i.name === product.name);
   if (existing) {
@@ -269,10 +281,116 @@ function renderCart() {
     });
   });
 
-  const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const total = getCartTotal();
   cartTotalEl.textContent = total + " Kč";
-  checkoutBtn.disabled = cart.length === 0;
+  
+  const isCartEmpty = cart.length === 0;
+  checkoutBtn.disabled = isCartEmpty;
+  calcCheckoutBtn.disabled = isCartEmpty;
 }
+
+// =================== CELOSTRÁNKOVÁ KALKULAČKA ===================
+
+function getSuggestedAmounts(total) {
+  let suggestions = new Set();
+  let nextFifty = Math.ceil(total / 50) * 50;
+  suggestions.add(nextFifty);
+
+  let nextHundred = Math.ceil(total / 100) * 100;
+  suggestions.add(nextHundred); 
+
+  const banknotes = [200, 500, 1000, 2000, 5000];
+  for (let note of banknotes) {
+    if (note > total) suggestions.add(note);
+  }
+  return Array.from(suggestions).slice(0, 3);
+}
+
+function renderQuickAmounts(total) {
+  calcQuickAmountsEl.innerHTML = "";
+  const suggestions = getSuggestedAmounts(total);
+  
+  suggestions.forEach(amount => {
+    const btn = document.createElement("button");
+    btn.className = "quick-amount-btn flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold py-3 rounded-xl border border-emerald-200 transition-colors text-xl shadow-sm";
+    btn.textContent = amount;
+    btn.addEventListener("click", () => {
+      calcReceivedInput.value = amount;
+      updateCalcDisplay();
+    });
+    calcQuickAmountsEl.appendChild(btn);
+  });
+}
+
+document.querySelectorAll(".calc-numpad-btn[data-num]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (calcReceivedInput.value.length < 8) { 
+      calcReceivedInput.value += btn.dataset.num;
+      updateCalcDisplay();
+    }
+  });
+});
+
+document.getElementById("calc-numpad-back").addEventListener("click", () => {
+  calcReceivedInput.value = calcReceivedInput.value.slice(0, -1);
+  updateCalcDisplay();
+});
+
+document.getElementById("calc-numpad-clear").addEventListener("click", () => {
+  calcReceivedInput.value = "";
+  updateCalcDisplay();
+});
+
+function updateCalcDisplay() {
+  const total = getCartTotal();
+  const receivedStr = calcReceivedInput.value;
+  
+  if (!receivedStr) {
+    calcResultLabel.textContent = "Vrátit:";
+    calcChangeDisplay.textContent = "0 Kč";
+    calcResultBox.className = "flex justify-between items-center mb-6 text-2xl bg-slate-50 p-5 rounded-2xl border-2 border-slate-100 transition-colors";
+    calcChangeDisplay.className = "font-black text-slate-400 text-3xl";
+    calcConfirmBtn.disabled = true;
+    return;
+  }
+
+  const received = parseInt(receivedStr, 10) || 0;
+  const change = received - total;
+  
+  if (change < 0) {
+    calcResultLabel.textContent = "Zbývá doplatit:";
+    calcChangeDisplay.textContent = Math.abs(change) + " Kč";
+    calcResultBox.className = "flex justify-between items-center mb-6 text-2xl bg-red-50 p-5 rounded-2xl border-2 border-red-100 transition-colors";
+    calcChangeDisplay.className = "font-black text-red-600 text-3xl";
+    calcConfirmBtn.disabled = true;
+  } else {
+    calcResultLabel.textContent = "Vrátit:";
+    calcChangeDisplay.textContent = change + " Kč";
+    calcResultBox.className = "flex justify-between items-center mb-6 text-2xl bg-emerald-50 p-5 rounded-2xl border-2 border-emerald-100 transition-colors";
+    calcChangeDisplay.className = "font-black text-emerald-600 text-3xl";
+    calcConfirmBtn.disabled = false;
+  }
+}
+
+// OTEVŘENÍ OBRAZOVKY KALKULAČKY
+calcCheckoutBtn.addEventListener("click", () => {
+  const total = getCartTotal();
+  calcTotalDisplay.textContent = total + " Kč";
+  calcReceivedInput.value = "";
+  
+  renderQuickAmounts(total);
+  updateCalcDisplay();
+  
+  // Přepnutí obrazovek
+  posScreen.classList.add("hidden");
+  calcScreen.classList.remove("hidden");
+});
+
+// ZAVŘENÍ OBRAZOVKY KALKULAČKY (NÁVRAT K NÁKUPU)
+calcCancelBtn.addEventListener("click", () => {
+  calcScreen.classList.add("hidden");
+  posScreen.classList.remove("hidden");
+});
 
 // =================== ZAÚČTOVÁNÍ ===================
 const overlay = document.getElementById("overlay");
@@ -284,9 +402,10 @@ document.getElementById("overlay-close").addEventListener("click", () => {
   overlay.classList.add("hidden");
 });
 
-checkoutBtn.addEventListener("click", async () => {
+async function processCheckout() {
   if (cart.length === 0) return;
 
+  // Modální okno načítání se překryje přes aktivní obrazovku
   overlay.classList.remove("hidden");
   overlayLoading.classList.remove("hidden");
   overlaySuccess.classList.add("hidden");
@@ -294,7 +413,6 @@ checkoutBtn.addEventListener("click", async () => {
 
   const timestamp = new Date().toISOString();
 
-  // Každá položka košíku = jeden řádek v tabulce
   const salesRows = cart.map(item => ({
     timestamp,
     employee: currentEmployee.name,
@@ -308,24 +426,30 @@ checkoutBtn.addEventListener("click", async () => {
   try {
     await fetch(GAS_URL, {
       method: "POST",
-      mode: "no-cors", // Google Apps Script Web App vyžaduje no-cors z prohlížeče
+      mode: "no-cors", 
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({ sales: salesRows })
     });
 
-    // Protože "no-cors" neumožňuje číst odpověď, po odeslání předpokládáme úspěch
     overlayLoading.classList.add("hidden");
     overlaySuccess.classList.remove("hidden");
+    
+    // Vyčištění a návrat do POSu na pozadí
     cart = [];
     renderCart();
+    calcScreen.classList.add("hidden");
+    posScreen.classList.remove("hidden");
 
     setTimeout(() => {
       overlay.classList.add("hidden");
-    }, 1500);
+    }, 1800); // Nechal jsem zprávu o něco déle, ať si prodejce všimne úspěchu
 
   } catch (err) {
     console.error(err);
     overlayLoading.classList.add("hidden");
     overlayError.classList.remove("hidden");
   }
-});
+}
+
+checkoutBtn.addEventListener("click", processCheckout);
+calcConfirmBtn.addEventListener("click", processCheckout);
