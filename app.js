@@ -36,6 +36,7 @@ const PRODUCTS = {
     { name: "detská mikina OVOCIE DUCHA růžová", price: 485 },
     { name: "detská šiltovka SOM ORIGINÁL", price: 320 },
     { name: "detské cd ODVÁŽNY PRIATEĽ", price: 250 },
+    { name: "detské tričko SOM ORIGINAL", price: 360 },
     ],
     "Godzone": [
     { name: "3 rôzne odznaky spolu", price: 50 },
@@ -65,7 +66,8 @@ const PRODUCTS = {
     { name: "šiltovka HOPE RUNNER", price: 365 },
     { name: "šiltovka GRACE", price: 365 },
     { name: "plátenka MORNING MERCY", price: 385 },
-    { name: "plátenka HOPE RUNNER", price: 385 }
+    { name: "plátenka HOPE RUNNER", price: 385 },
+    { name: "košile Salt and light", price: 870 },
   ],
   "Solí ze mě": [
     { name: "Přání s obálkou (různé druhy)", price: 85 },
